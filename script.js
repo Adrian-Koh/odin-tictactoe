@@ -8,11 +8,11 @@ function createBoard() {
 }
 
 const gameController = function(board) {
-    const moveCount = 0;
+    let moveCount = 0;
     function promptMove(isPlayer1Turn) {
         const playerTurn = isPlayer1Turn ? 'Player 1' : 'Player 2';
         let row = parseInt(prompt(playerTurn + ' enter row: 0-2'));
-        let col = parseint(prompt(playerTurn + ' enter column: 0-2'));
+        let col = parseInt(prompt(playerTurn + ' enter column: 0-2'));
 
         registerMove(row, col);
     }
@@ -33,5 +33,12 @@ const gameController = function(board) {
     }
 
     return {nextMove};
+}
+
+let board = createBoard();
+const game = gameController(board);
+while (true) {
+    console.table(board.grid);
+    game.nextMove();
 }
 
