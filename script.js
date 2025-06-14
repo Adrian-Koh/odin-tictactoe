@@ -9,21 +9,7 @@ function createBoard() {
 
 const gameController = function(board) {
     let moveCount = 0;
-    let hasWon = false;
-
-    function promptMove() {
-        const playerTurn = moveCount % 2 === 0 ? 'Player 1' : 'Player 2';
-        let row = parseInt(prompt(playerTurn + ' enter row: 0-2'));
-        let col = parseInt(prompt(playerTurn + ' enter column: 0-2'));
-
-        registerMove(row, col);
-    }
-
-    function nextMove() {
-        promptMove();
-        checkWinner();
-        moveCount++;
-    }
+    let gameEnd = false;
 
     function registerMove(row, col) {
         if (board.grid[row][col] === '-') {
@@ -34,8 +20,11 @@ const gameController = function(board) {
         }
         else {
             alert('This square has already been chosen!');
-            promptMove();
+            return;
         }
+
+        checkWinner();
+        moveCount++;
     }
     function checkWinner() {
         if (((board.grid[0][0] === board.grid[0][1]) && (board.grid[0][1] === board.grid[0][2]) && (board.grid[0][0] !== '-')) ||
@@ -52,21 +41,37 @@ const gameController = function(board) {
                 else {
                     alert('Player 2 has won!');
                 }
-                hasWon = true;
+                gameEnd = true;
             }
     }
 
     function isGameOver() {
-        return hasWon;
+        return gameEnd;
     }
 
-    return {nextMove, isGameOver};
+    function currentPlayerSymbol() {
+        const isPlayer1 = moveCount % 2 === 0;
+        return isPlayer1 ? 'O' : 'X';
+    }
+
+    return {registerMove, isGameOver, currentPlayerSymbol};
 }
+
+const grid = document.querySelector('#grid');
+grid.addEventListener('click', (event) => {
+    const cellId = parseInt(event.target.id) - 1;
+    const row = parseInt(cellId / 3);
+    const col = parseInt(cellId % 3);
+    
+    const symbol = game.currentPlayerSymbol();
+    game.registerMove(row, col);
+    event.target.innerText = symbol;
+    console.table(board.grid);
+});
+
+
+
 
 let board = createBoard();
 const game = gameController(board);
-while (!game.isGameOver()) {
-    console.table(board.grid);
-    game.nextMove();
-}
 
