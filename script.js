@@ -33,6 +33,7 @@ const gameController = function(board) {
 
         moveCount++;
     }
+
     function checkWinner() {
         if (((board.grid[0][0] === board.grid[0][1]) && (board.grid[0][1] === board.grid[0][2]) && (board.grid[0][0] !== '-')) ||
             ((board.grid[1][0] === board.grid[1][1]) && (board.grid[1][1] === board.grid[1][2]) && (board.grid[1][0] !== '-')) ||
@@ -76,13 +77,13 @@ grid.addEventListener('click', (event) => {
     console.table(board.grid);
 });
 
-const start = document.querySelector('#start');
-start.addEventListener('click', (event) => {
-    event.target.innerText = 'Start';
-    startGame();
+const restart = document.querySelector('#restart');
+restart.addEventListener('click', () => {
+    restartGame();
+    updateResult();
 })
 
-function startGame() {
+function restartGame() {
     board = createBoard();
     game = gameController(board);
     const cells = document.querySelectorAll('.cell');
@@ -91,11 +92,11 @@ function startGame() {
     }
 }
 
-function updateResult(message){
+function updateResult(message = ''){
     const result = document.querySelector('#result');
     result.innerText = message;
 }
 
-
 let board;
 let game;
+restartGame();
