@@ -7,7 +7,7 @@ function createBoard() {
     return {grid};
 }
 
-const gameController = function(board) {
+const gameController = function(player1, player2, board) {
     let moveCount = 0;
     let gameEnd = false;
 
@@ -44,10 +44,10 @@ const gameController = function(board) {
             ((board.grid[0][0] === board.grid[1][1]) && (board.grid[1][1] === board.grid[2][2]) && (board.grid[0][0] !== '-')) ||
             ((board.grid[0][2] === board.grid[1][1]) && (board.grid[1][1] === board.grid[2][0]) && (board.grid[0][2] !== '-'))) {
                 if (moveCount % 2 === 0) { 
-                    updateResult('Player 1 has won!');
+                    updateResult(`${player1.name} has won!`);
                 }
                 else {
-                    updateResult('Player 2 has won!');
+                    updateResult(`${player2.name} has won!`);
                 }
                 gameEnd = true;
             }
@@ -67,6 +67,9 @@ const gameController = function(board) {
 
 const grid = document.querySelector('#grid');
 grid.addEventListener('click', (event) => {
+    if (game.isGameOver())
+        return;
+
     const cellId = parseInt(event.target.id) - 1;
     const row = parseInt(cellId / 3);
     const col = parseInt(cellId % 3);
@@ -77,15 +80,21 @@ grid.addEventListener('click', (event) => {
     console.table(board.grid);
 });
 
-const restart = document.querySelector('#restart');
-restart.addEventListener('click', () => {
-    restartGame();
+const start = document.querySelector('#start');
+start.addEventListener('click', () => {
+    startGame();
     updateResult();
+    start.innerText = 'Restart';
 })
 
-function restartGame() {
+
+function startGame() {
+    const player1Name = document.querySelector('#player1').value;
+    const player2Name = document.querySelector('#player2').value;
+    const player1 = createPlayer(player1Name);
+    const player2 = createPlayer(player2Name);
     board = createBoard();
-    game = gameController(board);
+    game = gameController(player1, player2, board);
     const cells = document.querySelectorAll('.cell');
     for (const cell of cells) {
         cell.innerText = '';
@@ -99,4 +108,3 @@ function updateResult(message = ''){
 
 let board;
 let game;
-restartGame();
