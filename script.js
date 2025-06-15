@@ -24,6 +24,13 @@ const gameController = function(board) {
         }
 
         checkWinner();
+
+        if (moveCount === 8) {
+            updateResult('The game ends in a draw.');
+            gameEnd = true;
+            return;
+        }
+
         moveCount++;
     }
     function checkWinner() {
@@ -36,10 +43,10 @@ const gameController = function(board) {
             ((board.grid[0][0] === board.grid[1][1]) && (board.grid[1][1] === board.grid[2][2]) && (board.grid[0][0] !== '-')) ||
             ((board.grid[0][2] === board.grid[1][1]) && (board.grid[1][1] === board.grid[2][0]) && (board.grid[0][2] !== '-'))) {
                 if (moveCount % 2 === 0) { 
-                    alert('Player 1 has won!');
+                    updateResult('Player 1 has won!');
                 }
                 else {
-                    alert('Player 2 has won!');
+                    updateResult('Player 2 has won!');
                 }
                 gameEnd = true;
             }
@@ -69,9 +76,26 @@ grid.addEventListener('click', (event) => {
     console.table(board.grid);
 });
 
+const start = document.querySelector('#start');
+start.addEventListener('click', (event) => {
+    event.target.innerText = 'Start';
+    startGame();
+})
+
+function startGame() {
+    board = createBoard();
+    game = gameController(board);
+    const cells = document.querySelectorAll('.cell');
+    for (const cell of cells) {
+        cell.innerText = '';
+    }
+}
+
+function updateResult(message){
+    const result = document.querySelector('#result');
+    result.innerText = message;
+}
 
 
-
-let board = createBoard();
-const game = gameController(board);
-
+let board;
+let game;
